@@ -1,14 +1,13 @@
 import datetime, json, sys
 sys.set_int_max_str_digits(0)
 
-data = {}
 with open('data.json', mode='r', encoding='utf8') as jfile:
     data = json.load(jfile)
 
 def get_today():
     today = datetime.date.today()
     # today = datetime.datetime.today() + datetime.timedelta(hours = 6)
-    return str(today)
+    return today.strftime("%Y/%m/%d")
 
 def get_now():
     now = datetime.datetime.now()
@@ -75,7 +74,7 @@ def add_countdown(permission, view, event, year, month, day, last, add):
         with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
             data['countdown_list'].append({'view':view, 'event':event, 'year':int(year), 'month':int(month), 'day':int(day), 'last':int(last), 'add':add, 'key':int(year) * 10000 + int(month) * 100 + int(day)})
             data['countdown_list'].sort(key = lambda x : int(x['key']))
-            json.dump(data, jfile, indent = 3)
+            json.dump(data, jfile, indent = 4)
         return "Countdown added successfully!"
     else:
         return "You do not have enough permission to do this."
@@ -91,7 +90,7 @@ def delete_countdown(permission, event):
         else:
             with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
                 data['countdown_list'].pop(countdown_index - 1)
-                json.dump(data, jfile, indent = 3)
+                json.dump(data, jfile, indent = 4)
             return "Countdown deleted successfully!"
     else:
         return "You do not have enough permission to do this."

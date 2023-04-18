@@ -1,6 +1,5 @@
 import json, random
 
-data = {}
 with open('data.json', mode='r', encoding='utf8') as jfile:
     data = json.load(jfile)
     
@@ -34,7 +33,7 @@ def add_food(permission, restaurant):
         else:
             with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
                 data['food_list'].append(str(restaurant))
-                json.dump(data, jfile, indent = 3)  
+                json.dump(data, jfile, indent = 4)  
             return 'Food added successfully!'
     else:
         return "You do not have enough permission to do this."
@@ -50,7 +49,7 @@ def delete_food(permission, restaurant):
         else:
             with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
                 data['food_list'].pop(food_index - 1)
-                json.dump(data, jfile, indent = 3)
+                json.dump(data, jfile, indent = 4)
             return "Food deleted successfully!"
     else:
         return "You do not have enough permission to do this."

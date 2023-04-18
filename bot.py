@@ -46,6 +46,7 @@ async def help(ctx):
     embed = discord.Embed(color = discord.Colour.from_rgb(225, 198, 153))
     embed.add_field(name = "/about", value = "Show some information about me.", inline = False)
     embed.add_field(name = "/ping", value = "Sends the bot's latency.", inline = False)
+    embed.add_field(name = "/spam", value = "Spam some messages.", inline = False)
     embed.add_field(name = "/countdown", value = "Get the countdown.", inline = False)
     embed.add_field(name = "/countdown_list", value = "Get the countdown event date.", inline = False)
     embed.add_field(name = "/food", value = "Pick a restaurant to eat.", inline = False)
@@ -59,6 +60,16 @@ async def ping(ctx):
     embed = discord.Embed(
         title = "Ping",
         description = f"Pong! Latency is `{round(bot.latency * 1000)}` ms",
+        color = discord.Colour.from_rgb(225, 198, 153)
+    )
+    embed.set_footer(text = countdown_handler.get_now())
+    await ctx.respond(embed = embed)
+
+@bot.command(description = "Spam some messages.")
+async def spam(ctx):
+    embed = discord.Embed(
+        title = "Spam",
+        description = "There is nothing to spam now.",
         color = discord.Colour.from_rgb(225, 198, 153)
     )
     embed.set_footer(text = countdown_handler.get_now())
