@@ -14,22 +14,45 @@ def get_now():
     # now = datetime.datetime.now() + datetime.timedelta(hours = 6)
     return now.strftime("%Y/%m/%d %H:%M:%S")
 
-def find_countdown(event):
+def find_countdown(event, chn):
     countdown_index = 0 
     for i in range(len(data['countdown_list'])):
+        if data['countdown_list'][i]['channel'] != chn:
+            continue
         if data['countdown_list'][i]['event'] == event:
             countdown_index = i + 1
     if countdown_index > 0:
         return True
     else:
         return False
+    
+def count_countdown(chn):
+    countdown_cnt = 0
+    for i in range(len(data['countdown_list'])):
+        if data['countdown_list'][i]['channel'] == chn:
+            countdown_cnt += 1
+    return countdown_cnt
+    
+def find_countdown_channel(chn):
+    countdown_channel_index = 0
+    for i in range(len(data['countdown_channel'])):
+        if data['countdown_channel'][i] != chn:
+            continue
+        else:
+            countdown_channel_index = i + 1
+    if countdown_channel_index > 0:
+        return True
+    else:
+        return False
 
-def get_countdown():
+def get_countdown(chn):
     today = datetime.date.today()
     # today = datetime.datetime.today() + datetime.timedelta(hours = 6)
     # too = datetime.date(today.year, today.month, today.day)
     ret_message = ""
     for i in range(len(data['countdown_list'])):
+        if data['countdown_list'][i]['channel'] != chn:
+            continue
         target_day = datetime.date(data['countdown_list'][i]['year'], data['countdown_list'][i]['month'], data['countdown_list'][i]['day'])
         difference = target_day - today
         # difference = target_day - too
@@ -47,9 +70,11 @@ def get_countdown():
     ret_message += "\n<:rip:1023630791172968620>"
     return ret_message
 
-def get_countdown_list(permission):
+def get_countdown_list(permission, chn):
     ret_message = ""
     for i in range(len(data['countdown_list'])):
+        if data['countdown_list'][i]['channel'] != chn:
+            continue
         if not permission:
             if data['countdown_list'][i]['view'] == 'false':
                 continue
@@ -67,28 +92,38 @@ def get_countdown_list(permission):
         ret_message += '\n'
     return ret_message
 
-def add_countdown(permission, view, event, year, month, day, last, add):
+def add_countdown(permission, view, event, year, month, day, last, add, chn):
     if permission:
-        if find_countdown(event):
+        if find_countdown(event, chn):
             return "Countdown already exists!"
         with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
-            data['countdown_list'].append({'view':view, 'event':event, 'year':int(year), 'month':int(month), 'day':int(day), 'last':int(last), 'add':add, 'key':int(year) * 10000 + int(month) * 100 + int(day)})
+            data['countdown_list'].append({'view':view, 'event':event, 'year':int(year), 'month':int(month), 'day':int(day), 'last':int(last), 'add':add, 'key':int(year) * 10000 + int(month) * 100 + int(day), 'channel': chn})
             data['countdown_list'].sort(key = lambda x : int(x['key']))
+            if not find_countdown_channel(chn):
+                data['countdown_channel'].append(chn)
             json.dump(data, jfile, indent = 4)
         return "Countdown added successfully!"
     else:
         return "You do not have enough permission to do this."
     
-def delete_countdown(permission, event):
+def delete_countdown(permission, event, chn):
     if permission:
         countdown_index = 0 
         for i in range(len(data['countdown_list'])):
+            if data['countdown_list'][i]['channel'] != chn:
+                continue
             if data['countdown_list'][i]['event'] == event:
                 countdown_index = i + 1
         if countdown_index == 0:
             return "Countdown does not exist!"
         else:
             with open('data.json', mode = 'w', encoding = 'utf8') as jfile:
+                countdown_channel_index = 0
+                if count_countdown(chn) == 1:
+                    for i in range(len(data['countdown_channel'])):
+                        if data['countdown_channel'][i] == chn:
+                            countdown_channel_index = i + 1
+                    data['countdown_channel'].pop(countdown_channel_index - 1)
                 data['countdown_list'].pop(countdown_index - 1)
                 json.dump(data, jfile, indent = 4)
             return "Countdown deleted successfully!"

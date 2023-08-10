@@ -10,23 +10,25 @@ bot = discord.Bot()
 @bot.event
 async def on_ready():
     async def schedule_daily_message():
-        while True:
-            now = datetime.datetime.now()
-            midnight = (now + datetime.timedelta(days = 1)).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-            wait_time = (midnight - now).total_seconds()
-            # midnight = (now + datetime.timedelta(days = 1)).replace(hour=18, minute=0, second=0, microsecond=0)
-            # wait_time = (midnight - now).total_seconds()
-            if wait_time > 86400:
-                wait_time -= 86400
-            print('Next daily message:', wait_time, '(s)')
-            await asyncio.sleep(wait_time)
-            
-            embed = discord.Embed(title = "Countdown", color = discord.Colour.from_rgb(225, 198, 153))
-            embed.add_field(name = countdown_handler.get_today(), value = countdown_handler.get_countdown(), inline = False)
-            embed.set_footer(text = countdown_handler.get_now())
-            
-            channel1 = bot.get_channel(1050409753202929664)
-            await channel1.send(embed = embed)
+        with open('data.json', mode='r', encoding='utf8') as data:
+            data = json.load(data)
+            while True:
+                now = datetime.datetime.now()
+                midnight = (now + datetime.timedelta(days = 1)).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+                wait_time = (midnight - now).total_seconds()
+                # midnight = (now + datetime.timedelta(days = 1)).replace(hour=18, minute=0, second=0, microsecond=0)
+                # wait_time = (midnight - now).total_seconds()
+                if wait_time > 86400:
+                    wait_time -= 86400
+                print('Next daily message:', wait_time, '(s)')
+                await asyncio.sleep(wait_time)
+                for i in range(len(data['countdown_channel'])): 
+                    embed = discord.Embed(title = "Countdown", color = discord.Colour.from_rgb(225, 198, 153))
+                    embed.add_field(name = countdown_handler.get_today(), value = countdown_handler.get_countdown(data['countdown_channel'][i]), inline = False)
+                    embed.set_footer(text = countdown_handler.get_now())
+                    
+                    channel = bot.get_channel(data['countdown_channel'][i])
+                    await channel.send(embed = embed)
     
     print(f"{bot.user} is ready and online!")
     game = discord.Game('>_<')
@@ -66,7 +68,7 @@ async def ping(ctx):
     await ctx.respond(embed = embed)
 
 @bot.command(description = "Spam some messages.")
-async def spam(ctx):
+async def spam(ctx, times):
     embed = discord.Embed(
         title = "Spam",
         description = "There is nothing to spam now.",
@@ -74,22 +76,32 @@ async def spam(ctx):
     )
     embed.set_footer(text = countdown_handler.get_now())
     await ctx.respond(embed = embed)
+    # for i in range(int(times)):
+    #     embed = discord.Embed(
+    #         title = "Spam",
+    #         description = "This is a spam message.",
+    #         color = discord.Colour.from_rgb(225, 198, 153)
+    #     )
+    #     embed.set_footer(text = countdown_handler.get_now())
+    #     await ctx.respond(embed = embed)    
 
 @bot.command(description = "Get the countdown.")
 async def countdown(ctx):
+    chn =str(ctx.channel.id)
     embed = discord.Embed(title = "Countdown", color = discord.Colour.from_rgb(225, 198, 153))
-    embed.add_field(name = countdown_handler.get_today(), value = countdown_handler.get_countdown(), inline = False)
+    embed.add_field(name = countdown_handler.get_today(), value = countdown_handler.get_countdown(chn), inline = False)
     embed.set_footer(text = countdown_handler.get_now())
     await ctx.respond(embed = embed)
     
 @bot.command(description = "Get the countdown event date.")
 async def countdown_list(ctx):
     author = str(ctx.author.id)
+    chn = str(ctx.channel.id)
     ret_title = "Countdown List"
     if permission_handler.find_permission(author):
         ret_title += " for Admin"
     embed = discord.Embed(title = ret_title, color = discord.Colour.from_rgb(225, 198, 153))
-    embed.add_field(name = "Date                   Event", value = countdown_handler.get_countdown_list(permission_handler.find_permission(author)), inline = False)
+    embed.add_field(name = "Date                   Event", value = countdown_handler.get_countdown_list(permission_handler.find_permission(author), chn), inline = False)
     embed.set_footer(text = countdown_handler.get_now())
     await ctx.respond(embed = embed)
 
@@ -144,12 +156,13 @@ async def admin_delete(ctx, id):
 @admin.command()
 async def countdown_add(ctx, view, event, year, month, day, last, add):
     author = str(ctx.author.id)
+    chn =str(ctx.channel.id)
     embed = discord.Embed(
         title = "Add Countdown",
-        description = countdown_handler.add_countdown(permission_handler.find_permission(author), view, event, year, month, day, last, add),
+        description = countdown_handler.add_countdown(permission_handler.find_permission(author), view, event, year, month, day, last, add, chn),
         color = discord.Colour.from_rgb(225, 198, 153)
     )
-    if countdown_handler.find_countdown(event):
+    if countdown_handler.find_countdown(event, chn):
         if view == 'true':
             embed.add_field(name = "View", value = view, inline = False)
             embed.add_field(name = "Event", value = event, inline = False)
@@ -162,12 +175,13 @@ async def countdown_add(ctx, view, event, year, month, day, last, add):
 @admin.command()
 async def countdown_delete(ctx, event):
     author = str(ctx.author.id)
+    chn =str(ctx.channel.id)
     embed = discord.Embed(
         title = "Delete Countdown",
-        description = countdown_handler.delete_countdown(permission_handler.find_permission(author), event),
+        description = countdown_handler.delete_countdown(permission_handler.find_permission(author), event, chn),
         color = discord.Colour.from_rgb(225, 198, 153)
     )
-    if not countdown_handler.find_countdown(event):
+    if not countdown_handler.find_countdown(event, chn):
         embed.add_field(name = "Event", value = event, inline = False)
     embed.set_footer(text = countdown_handler.get_now())
     await ctx.respond(embed = embed)

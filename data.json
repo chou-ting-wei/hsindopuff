@@ -2,73 +2,36 @@
     "countdown_list": [
         {
             "view": "true",
-            "event": "\u5fae\u7a4d\u5206\u7b2c\u4e8c\u6b21\u671f\u4e2d\u8003",
+            "event": "\u5206\u79d1\u6e2c\u9a57\u6210\u7e3e\u516c\u5e03",
             "year": 2023,
-            "month": 4,
-            "day": 25,
+            "month": 7,
+            "day": 28,
             "last": 1,
             "add": "NULL",
-            "key": 20230425
+            "key": 2023072,
+            "channel": "1050409753202929664"
         },
         {
             "view": "true",
-            "event": "\u666e\u7269\u671f\u4e2d\u8003",
+            "event": "\u5206\u767c\u5165\u5b78\u5fd7\u9858\u767b\u8a18",
             "year": 2023,
-            "month": 4,
-            "day": 27,
-            "last": 1,
-            "add": "NULL",
-            "key": 20230427
-        },
-        {
-            "view": "true",
-            "event": "\u500b\u4eba\u7814\u7a76\u4ea4\u4ef6",
-            "year": 2023,
-            "month": 5,
+            "month": 8,
             "day": 1,
-            "last": 1,
+            "last": 4,
             "add": "NULL",
-            "key": 20230501
+            "key": 20230801,
+            "channel": "1050409753202929664"
         },
         {
             "view": "true",
-            "event": "\u5206\u79d1\u6a21\u64ec\u80032",
+            "event": "\u5206\u767c\u5165\u5b78\u9304\u53d6\u516c\u544a",
             "year": 2023,
-            "month": 5,
-            "day": 10,
-            "last": 2,
-            "add": "NULL",
-            "key": 20230510
-        },
-        {
-            "view": "true",
-            "event": "\u5fae\u7a4d\u5206\u5c0f\u80033",
-            "year": 2023,
-            "month": 5,
+            "month": 8,
             "day": 15,
             "last": 1,
             "add": "NULL",
-            "key": 20230515
-        },
-        {
-            "view": "true",
-            "event": "\u7562\u696d\u5178\u79ae",
-            "year": 2023,
-            "month": 6,
-            "day": 5,
-            "last": 1,
-            "add": "\u4e00\u8def\u9806\u98a8",
-            "key": 20230605
-        },
-        {
-            "view": "true",
-            "event": "112\u5206\u79d1\u6e2c\u9a57",
-            "year": 2023,
-            "month": 7,
-            "day": 12,
-            "last": 2,
-            "add": "\u79d1\u79d1\u5927\u7834\u53f0",
-            "key": 20230712
+            "key": 20230815,
+            "channel": "1050409753202929664"
         }
     ],
     "food_list": [
@@ -102,5 +65,8 @@
     ],
     "permission_list": [
         "764407051791106069"
+    ],
+    "countdown_channel": [
+        "1050409753202929664"
     ]
 }
